@@ -26,7 +26,7 @@ server.post('/', upload.single('myfile'), function(request, respond) {
     if ( err ) console.log('ERROR: ' + err);
   });
 
-//   respond.end(request.file.originalname + ' uploaded!');
+ respond.end(request.file.originalname + ' uploaded!');
 respond.end("uploaded");
 }); 
 
