@@ -9,22 +9,67 @@ const express = require('express');
 const multer = require('multer');
 const server = express();
 // const PORT = 3000;
+const AWS = require('aws-sdk');
 const PORT = process.env.PORT || 3000;
 
 // uploaded images are saved in the folder "/upload_images"
 const upload = multer({dest: __dirname + '/upload_images'});
+const ID = 'AKIAV2H4JEE2S6SEB6W3';
+const SECRET = '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';
+var fs = require('fs');
+var path = require("path");
+// The name of the bucket that you have created
+// const BUCKET_NAME = 'test-bucket';
 
 server.use(express.static('public'));
+
+const s3 = new AWS.S3({
+  accessKeyId: ID,
+  secretAccessKey: SECRET
+});
+
+const uploadFile = (fileName) => {
+  // Read content from the file
+  const fileContent = fs.readFileSync(fileName);
+
+  // Setting up S3 upload parameters
+  var file = path.basename(fileName);
+
+  const params = {
+      Bucket: 'resultimp',
+      Key: file, // File name you want to save as in S3
+      Body: fileContent
+  };
+
+  // Uploading files to the bucket
+  s3.upload(params, function(err, data) {
+      if (err) {
+          throw err;
+      }
+      console.log(`File uploaded successfully. ${data.Location}`);
+  });
+};
+
 
 // "myfile" is the key of the http payload
 server.post('/', upload.single('myfile'), function(request, respond) {
   if(request.file) console.log(request.file);
   
+  
+
+// Uploading files to the bucket
+
   // save the image
-  var fs = require('fs');
+  
   fs.rename(__dirname + '/upload_images/' + request.file.filename, __dirname + '/upload_images/' + request.file.originalname, function(err) {
     if ( err ) console.log('ERROR: ' + err);
   });
+
+  
+
+  uploadFile(__dirname+'/upload_images/'+request.file.originalname);
+
+ 
 
  respond.end(request.file.originalname + ' uploaded!');
 // respond.end("uploaded");
