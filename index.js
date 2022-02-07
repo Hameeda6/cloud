@@ -27,7 +27,7 @@ server.post('/', upload.single('myfile'), function(request, respond) {
   });
 
  respond.end(request.file.originalname + ' uploaded!');
-respond.end("uploaded");
+// respond.end("uploaded");
 }); 
 
 // You need to configure node.js to listen on 0.0.0.0 so it will be able to accept connections on all the IPs of your machine
