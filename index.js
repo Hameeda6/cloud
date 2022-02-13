@@ -11,6 +11,7 @@ const server = express();
 // const PORT = 3000;
 const AWS = require('aws-sdk');
 const PORT = process.env.PORT || 3000;
+const { spawn } = require('child_process');
 
 // uploaded images are saved in the folder "/upload_images"
 const upload = multer({dest: __dirname + '/upload_images'});
