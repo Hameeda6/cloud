@@ -36,7 +36,7 @@ const uploadFile = (fileName) => {
   var file = path.basename(fileName);
 
   const params = {
-      Bucket: 'resultimp',
+      Bucket: 'impcloud',
       Key: file, // File name you want to save as in S3
       Body: fileContent
   };
