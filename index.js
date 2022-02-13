@@ -97,7 +97,7 @@ server.post('/', upload.single('myfile'), function (request, respond) {
 
   uploadFile(__dirname + '/upload_images/' + request.file.originalname);
   test(__dirname + '/upload_images/' + request.file.originalname);
-  outputFile(__dirname + 'output.txt');
+  outputFile(__dirname + '/output.txt');
 
 
   respond.end(request.file.originalname + ' uploaded!');
