@@ -31,12 +31,13 @@ const s3 = new AWS.S3({
 
 
 
-server.get("/test", (req, res) => {
+const test = (fileName) => {
   //const { name, id } = req.params;
   //const dataFromPython = await pythonPromise("./cloud/upload_images/test_00.jpg");
-  const python = spawn("python", ["../face_recognition.py","./cloud/upload_images/test_00.jpg"]);
-  
+  const python = spawn("python3", ["../face_recognition.py",fileName]);
+  var file = path.basename(fileName);
   python.stdout.on("data", (data) => {
+    console.log(file)
     console.log(data.toString())
    // resolve(data.toString());
   });
@@ -45,7 +46,7 @@ server.get("/test", (req, res) => {
   });
 
   res.send("success");
-});
+};
 
 const uploadFile = (fileName) => {
   // Read content from the file
@@ -87,6 +88,7 @@ server.post('/', upload.single('myfile'), function(request, respond) {
   
 
   uploadFile(__dirname+'/upload_images/'+request.file.originalname);
+  test(__dirname+'/upload_images/'+request.file.originalname);
 
  
 
