@@ -19,6 +19,7 @@ const ID = 'AKIAV2H4JEE2TXQJE442';
 const SECRET = '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';
 var fs = require('fs');
 var path = require("path");
+const { cachedDataVersionTag } = require('v8');
 // The name of the bucket that you have created
 // const BUCKET_NAME = 'test-bucket';
 
@@ -39,13 +40,15 @@ const test = (fileName) => {
   python.stdout.on("data", (data) => {
     console.log(file)
     console.log(data.toString())
-   // resolve(data.toString());
+    var content= file+ "  " + data.toString()
+    fs.appendFileSync('output.txt',content)
   });
+
   python.stderr.on("data", (data) => {
     console.error(data.toString());
   });
 
-  res.send("success");
+  //res.send("success");
 };
 
 const uploadFile = (fileName) => {
