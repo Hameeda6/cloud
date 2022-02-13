@@ -43,7 +43,7 @@ const pythonPromise = (data) => {
   });
 };
 
-app.get("/test", async (req, res) => {
+server.get("/test", async (req, res) => {
   //const { name, id } = req.params;
   const dataFromPython = await pythonPromise("./cloud/upload_images/test_00.jpg");
   res.send(dataFromPython);
