@@ -34,7 +34,7 @@ const s3 = new AWS.S3({
 server.get("/test", (req, res) => {
   //const { name, id } = req.params;
   //const dataFromPython = await pythonPromise("./cloud/upload_images/test_00.jpg");
-  const python = spawn("python", ["../face_recognition.py","./cloud/upload_images/test_00.jpg"]);
+  const python = spawn("python3", ["../face_recognition.py","./cloud/upload_images/test_00.jpg"]);
   
   python.stdout.on("data", (data) => {
     console.log(data.toString())
