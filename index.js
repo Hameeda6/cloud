@@ -1,28 +1,17 @@
-// const express = require('express');
-// const app = express();
-// const PORT = process.env.PORT || 3000;
-// app.get('/',(req, res) => res.send('Hello World'));
-// app.listen(PORT, () => console.log(`Server listening in port ${PORT}`))
 
-// we use express and multer libraries to send images
 const express = require('express');
 const multer = require('multer');
 const server = express();
-// const PORT = 3000;
+
 const AWS = require('aws-sdk');
 const PORT = process.env.PORT || 3000;
 const { spawn } = require('child_process');
 
-// uploaded images are saved in the folder "/upload_images"
-const upload = multer({dest: __dirname + '/upload_images'});
+const upload = multer({ dest: __dirname + '/upload_images' });
 const ID = 'AKIAV2H4JEE2TXQJE442';
 const SECRET = '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';
 var fs = require('fs');
 var path = require("path");
-const { cachedDataVersionTag } = require('v8');
-// The name of the bucket that you have created
-// const BUCKET_NAME = 'test-bucket';
-
 server.use(express.static('public'));
 
 const s3 = new AWS.S3({
@@ -33,45 +22,43 @@ const s3 = new AWS.S3({
 
 
 const test = (fileName) => {
-  //const { name, id } = req.params;
-  //const dataFromPython = await pythonPromise("./cloud/upload_images/test_00.jpg");
-  const python = spawn("python3", ["../face_recognition.py",fileName]);
+  const python = spawn("python3", ["../face_recognition.py", fileName]);
   var file = path.basename(fileName);
   python.stdout.on("data", (data) => {
     console.log(file)
     console.log(data.toString())
-    var content= file+ "  " + data.toString()
-    fs.appendFileSync('output.txt',content)
+    var content = file + "  " + data.toString()
+    fs.appendFileSync('output.txt', content)
   });
 
   python.stderr.on("data", (data) => {
     console.error(data.toString());
   });
 
-  //res.send("success");
 };
 
 const uploadFile = (fileName) => {
-  // Read content from the file
+
   const fileContent = fs.readFileSync(fileName);
 
-  // Setting up S3 upload parameters
   var file = path.basename(fileName);
 
   const params = {
-      Bucket: 'impcloud',
-      Key: file, // File name you want to save as in S3
-      Body: fileContent
+    Bucket: 'impcloud',
+    Key: file, // File name you want to save as in S3
+    Body: fileContent
   };
 
   // Uploading files to the bucket
-  s3.upload(params, function(err, data) {
-      if (err) {
-          throw err;
-      }
-      console.log(`File uploaded successfully. ${data.Location}`);
+  s3.upload(params, function (err, data) {
+    if (err) {
+      throw err;
+    }
+    console.log(`File uploaded successfully. ${data.Location}`);
   });
 };
+
+
 const outputFile = (fileName) => {
   // Read content from the file
   const fileContent = fs.readFileSync(fileName);
@@ -80,55 +67,46 @@ const outputFile = (fileName) => {
   var file = path.basename(fileName);
 
   const params = {
-      Bucket: 'outcloud1',
-      Key: file, // File name you want to save as in S3
-      Body: fileContent
+    Bucket: 'outcloud1',
+    Key: file, // File name you want to save as in S3
+    Body: fileContent
   };
 
   // Uploading files to the bucket
-  s3.upload(params, function(err, data) {
-      if (err) {
-          throw err;
-      }
-      console.log(`File uploaded successfully. ${data.Location}`);
+  s3.upload(params, function (err, data) {
+    if (err) {
+      throw err;
+    }
+    console.log(`File uploaded successfully. ${data.Location}`);
   });
 };
 
 
-
-
 // "myfile" is the key of the http payload
-server.post('/', upload.single('myfile'), function(request, respond) {
-  if(request.file) console.log(request.file);
-  
-  
+server.post('/', upload.single('myfile'), function (request, respond) {
+  if (request.file) console.log(request.file);
 
-// Uploading files to the bucket
-
+  // Uploading files to the bucket
   // save the image
-  
-  fs.rename(__dirname + '/upload_images/' + request.file.filename, __dirname + '/upload_images/' + request.file.originalname, function(err) {
-    if ( err ) console.log('ERROR: ' + err);
+
+  fs.rename(__dirname + '/upload_images/' + request.file.filename, __dirname + '/upload_images/' + request.file.originalname, function (err) {
+    if (err) console.log('ERROR: ' + err);
   });
 
-  
-
-  uploadFile(__dirname+'/upload_images/'+request.file.originalname);
-  test(__dirname+'/upload_images/'+request.file.originalname);
-  outputFile(__dirname+'output.txt');
-
- 
 
 
- respond.end(request.file.originalname + ' uploaded!');
-// respond.end("uploaded");
+  uploadFile(__dirname + '/upload_images/' + request.file.originalname);
+  test(__dirname + '/upload_images/' + request.file.originalname);
+  outputFile(__dirname + 'output.txt');
 
-}); 
 
-// You need to configure node.js to listen on 0.0.0.0 so it will be able to accept connections on all the IPs of your machine
+  respond.end(request.file.originalname + ' uploaded!');
+  // respond.end("uploaded");
+
+});
+
 const hostname = '0.0.0.0';
 server.listen(PORT, () => {
-    // console.log(`Server running at http://${hostname}:${PORT}/`);
-    console.log(`Server listening in port ${PORT}`)
-  });
+  console.log(`Server listening in port ${PORT}`)
+});
 
