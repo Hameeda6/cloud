@@ -72,6 +72,29 @@ const uploadFile = (fileName) => {
       console.log(`File uploaded successfully. ${data.Location}`);
   });
 };
+const outputFile = (fileName) => {
+  // Read content from the file
+  const fileContent = fs.readFileSync(fileName);
+
+  // Setting up S3 upload parameters
+  var file = path.basename(fileName);
+
+  const params = {
+      Bucket: 'outcloud1',
+      Key: file, // File name you want to save as in S3
+      Body: fileContent
+  };
+
+  // Uploading files to the bucket
+  s3.upload(params, function(err, data) {
+      if (err) {
+          throw err;
+      }
+      console.log(`File uploaded successfully. ${data.Location}`);
+  });
+};
+
+
 
 
 // "myfile" is the key of the http payload
@@ -92,11 +115,14 @@ server.post('/', upload.single('myfile'), function(request, respond) {
 
   uploadFile(__dirname+'/upload_images/'+request.file.originalname);
   test(__dirname+'/upload_images/'+request.file.originalname);
+  outputFile(__dirname+'output.txt');
 
  
 
+
  respond.end(request.file.originalname + ' uploaded!');
 // respond.end("uploaded");
+
 }); 
 
 // You need to configure node.js to listen on 0.0.0.0 so it will be able to accept connections on all the IPs of your machine
