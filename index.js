@@ -14,8 +14,8 @@ const PORT = process.env.PORT || 3000;
 
 // uploaded images are saved in the folder "/upload_images"
 const upload = multer({dest: __dirname + '/upload_images'});
-const ID = 'AKIAV2H4JEE2S6SEB6W3';
-const SECRET = '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';
+const ID = 'AKIAV2H4JEE2TXQJE442';
+const SECRET = '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';
 var fs = require('fs');
 var path = require("path");
 // The name of the bucket that you have created
