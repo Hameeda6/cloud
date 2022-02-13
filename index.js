@@ -29,25 +29,22 @@ const s3 = new AWS.S3({
   secretAccessKey: SECRET
 });
 
-const pythonPromise = (data) => {
-  return new Promise((resolve, reject) => {
-    const python = spawn("python", ["../face_recognition.py",data]);
 
-    python.stdout.on("data", (data) => {
-      console.log(data.toString())
-      resolve(data.toString());
-    });
 
-    python.stderr.on("data", (data) => {
-      reject(data.toString());
-    });
-  });
-};
-
-server.get("/test", async (req, res) => {
+server.get("/test", (req, res) => {
   //const { name, id } = req.params;
-  const dataFromPython = await pythonPromise("./cloud/upload_images/test_00.jpg");
-  res.send(dataFromPython);
+  //const dataFromPython = await pythonPromise("./cloud/upload_images/test_00.jpg");
+  const python = spawn("python", ["../face_recognition.py","./cloud/upload_images/test_00.jpg"]);
+  
+  python.stdout.on("data", (data) => {
+    console.log(data.toString())
+   // resolve(data.toString());
+  });
+  python.stderr.on("data", (data) => {
+    console.error(data.toString());
+  });
+
+  res.send("success");
 });
 
 const uploadFile = (fileName) => {
