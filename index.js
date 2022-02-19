@@ -8,8 +8,8 @@ const PORT = process.env.PORT || 3000;
 const { spawn } = require('child_process');
 
 const upload = multer({ dest: __dirname + '/upload_images' });
-const ID = 'AKIAV2H4JEE2TXQJE442';
-const SECRET = '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';
+const ID = 'AKIAV2H4JEE2V2XBIVXY';
+const SECRET = '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';
 var fs = require('fs');
 var path = require("path");
 server.use(express.static('public'));
